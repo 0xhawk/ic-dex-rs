@@ -3,13 +3,16 @@ use std::cell::RefCell;
 use candid::{CandidType, Nat, Principal};
 use ic_cdk::caller;
 use ic_cdk_macros::*;
-use ic_ledger_types::{
-    AccountIdentifier, Memo, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID,
-};
+use utils::principal_to_subaccount;
+
+mod utils;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::new(State::default());
 }
+
+pub const MAINNET_LEDGER_CANISTER_ID: Principal =
+    Principal::from_slice(&[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x01, 0x01]);
 
 pub type DepositReceipt = Result<Nat, DepositErr>;
 
@@ -26,22 +29,51 @@ pub struct State {
     // exchange: Exchange,
 }
 
+#[init]
+fn init(ledger: Option<Principal>) {
+    ic_cdk::setup();
+    STATE.with(|s| {
+        s.borrow_mut().owner = Some(caller());
+        s.borrow_mut().ledger = ledger;
+    });
+}
+
 #[ic_cdk::query]
 fn greet(name: String) -> String {
     format!("Hello, {}!", name)
 }
 
-pub fn deposit(token_canister_id: Principal) -> DepositReceipt {
-    // let caller = caller();
-    
-    let amount = Nat::from(0);
+#[query]
+fn owner() -> Principal {
+    STATE.with(|s| s.borrow().owner.unwrap())
+}
+
+fn deposit_icp(caller: Principal) -> Nat {
+    Nat::from(0)
+}
+
+fn deposit_token(caller: Principal, token: Principal) -> Nat {
+    Nat::from(0)
+}
+
+#[update]
+pub async fn deposit(token_canister_id: Principal) -> DepositReceipt {
+    let caller = caller();
+    let ledger_canister_id = STATE
+        .with(|s| s.borrow().ledger)
+        .unwrap_or(MAINNET_LEDGER_CANISTER_ID);
+    let amount = if token_canister_id == ledger_canister_id {
+        deposit_icp(caller)
+    } else {
+        deposit_token(caller, token_canister_id)
+    };
     DepositReceipt::Ok(amount)
 }
 
-#[test]
-fn test_deposit() {
-    let token_canister_id = Principal::from_text("rrkah-fqaaa-aaaaa-aaaaq-cai").unwrap();
-    let amount = Nat::from(0);
-    let receipt = deposit(token_canister_id);
-    assert_eq!(receipt, DepositReceipt::Ok(amount));
+#[update]
+pub fn clear() {
+    STATE.with(|s| {
+        let mut state = s.borrow_mut();
+        assert!(state.owner.unwrap() == caller());
+    })
 }

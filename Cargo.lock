@@ -644,6 +644,8 @@ dependencies = [
  "ic-cdk-macros 0.7.1",
  "ic-cdk-timers",
  "ic-ledger-types",
+ "num-bigint",
+ "num-traits",
 ]
 
 [[package]]
