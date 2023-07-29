@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "canisters": {
+    "ic_dex_rs_backend": {
+      "type": "rust",
+      "package": "ic_dex_rs_backend",
+      "candid": "src/ic_dex_rs_backend/ic_dex_rs_backend.did"
+    },
+    "ic_dex_rs_frontend": {
+      "type": "assets",
+      "source": [
+        "src/ic_dex_rs_frontend/assets"
+      ],
+      "dependencies": [
+        "ic_dex_rs_backend"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  },
+  "output_env_file": ".env"
+}
