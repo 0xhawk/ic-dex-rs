@@ -14,6 +14,16 @@
       "dependencies": [
         "ic_dex_rs_backend"
       ]
+    },
+    "publisher": {
+      "package": "publisher",
+      "candid": "src/publisher/src/publisher.did",
+      "type": "rust"
+    },
+    "subscriber": {
+      "package": "subscriber",
+      "candid": "src/subscriber/src/subscriber.did",
+      "type": "rust"
     }
   },
   "defaults": {

@@ -1,5 +1,6 @@
 [workspace]
 members = [
     "src/ic_dex_rs_backend",
-    "src/publisher"
+    "src/publisher",
+    "src/subscriber",
 ]
