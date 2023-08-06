@@ -11,6 +11,12 @@ thread_local! {
 }
 
 #[derive(Clone, Debug, CandidType, Deserialize)]
+struct Counter {
+    topic: String,
+    value: u64,
+}
+
+#[derive(Clone, Debug, CandidType, Deserialize)]
 struct Subscriber {
     topic: String,
 }
@@ -23,4 +29,15 @@ fn subscribe(subscriber: Subscriber) {
             .borrow_mut()
             .insert(subscriber_principal_id, subscriber)
     });
+}
+
+#[update]
+async fn publish(counter: Counter) {
+    SUBSCRIBERS.with(|subscribers| {
+        for (k, v) in subscribers.borrow().iter() {
+            if v.topic == counter.topic {
+                let _call_result: Result<(), _> = ic_cdk::notify(*k, "update_count", (&counter,));
+            }
+        }
+    })
 }
