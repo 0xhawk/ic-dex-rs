@@ -70,6 +70,49 @@ async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
     let balance = ic_ledger_types::account_balance(ledger_canister_id, balance_args)
         .await
         .map_err(|_| DepositErr::TransferFailure)?;
+    if balance.e8s() < ICP_FEE {
+        return Err(DepositErr::BalanceLow);
+    }
 
+    let transfer_args = ic_ledger_types::TransferArgs {
+        memo: Memo(0),
+        amount: balance - Tokens::from_e8s(ICP_FEE),
+        fee: Tokens::from_e8s(ICP_FEE),
+        from_subaccount: Some(principal_to_subaccount(&caller)),
+        to: AccountIdentifier::new(&canister_id, &DEFAULT_SUBACCOUNT),
+        created_at_time: None,
+    };
+    ic_ledger_types::transfer(ledger_canister_id, transfer_args)
+        .await
+        .map_err(|_| DepositErr::TransferFailure)?
+        .map_err(|_| DepositErr::TransferFailure)?;
+
+    ic_cdk::println!(
+        "Deposit of {} ICP in account {:?}",
+        balance - Tokens::from_e8s(ICP_FEE),
+        &account
+    );
     Ok((balance.e8s() - ICP_FEE).into())
+}
+
+#[query(name = "getBalance")]
+#[candid_method(query, rename = "getBalance")]
+pub fn get_balance(token_canister_id: Principal) -> Nat {
+    STATE.with(|s| s.borrow().exchange.get_balance(token_canister_id))
+}
+
+#[init]
+fn init(ledger: Option<Principal>) {
+    ic_cdk::setup();
+    STATE.with(|s| {
+        s.borrow_mut().owner = Some(caller());
+        s.borrow_mut().ledger = ledger;
+    });
+}
+
+export_service!();
+
+#[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
+fn export_candid() -> String {
+    __export_service()
 }
