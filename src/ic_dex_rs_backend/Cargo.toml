@@ -16,3 +16,5 @@ ic-cdk-timers = "0.1" # Feel free to remove this dependency if you don't need ti
 ic-ledger-types = "0.1"
 num-bigint = "0.4"
 num-traits = "0.2"
+serde = "1.0.126"
+serde_derive = "1.0.126"

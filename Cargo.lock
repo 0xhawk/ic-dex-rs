@@ -661,6 +661,8 @@ dependencies = [
  "ic-ledger-types",
  "num-bigint",
  "num-traits",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]
