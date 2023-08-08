@@ -101,6 +101,15 @@ pub fn get_balance(token_canister_id: Principal) -> Nat {
     STATE.with(|s| s.borrow().exchange.get_balance(token_canister_id))
 }
 
+#[update(name = "getDepositAddress")]
+#[candid_method(update, rename = "getDepositAddress")]
+pub fn get_deposit_address() -> AccountIdentifier {
+    let canister_id = ic_cdk::api::id();
+    let subaccount = principal_to_subaccount(&caller());
+
+    AccountIdentifier::new(&canister_id, &subaccount)
+}
+
 #[init]
 fn init(ledger: Option<Principal>) {
     ic_cdk::setup();
