@@ -17,7 +17,7 @@ dfx deploy --network ${NETWORK} icrc1-aaa-ledger --argument "(variant { Init =
         token_name = \"${TOKEN_NAME}\";
         token_symbol = \"${TOKEN_SYMBOL}\";
         minting_account = record { owner = principal \"${MINTER_PRINCIPAL}\";};
-        initial_balances = vec {};
+        initial_balances = vec { record { record { owner = principal \"${MINTER_PRINCIPAL}\";}; 2000000000; } };
         metadata = vec {};
         transfer_fee = 10;
         archive_options = record {
@@ -27,3 +27,6 @@ dfx deploy --network ${NETWORK} icrc1-aaa-ledger --argument "(variant { Init =
         };
       }
 })"
+
+dfx canister --network ${NETWORK} call icrc1-aaa-ledger icrc1_total_supply
+dfx canister --network ${NETWORK} call icrc1-aaa-ledger icrc1_balance_of "(record { owner = principal \"${MINTER_PRINCIPAL}\"; })"
