@@ -5,6 +5,16 @@
       "type": "rust",
       "package": "dex",
       "candid": "src/dex/dex.did"
+    },
+    "icrc1-aaa-ledger": {
+      "type": "custom",
+      "wasm": "src/icrc1/icrc1-ledger.wasm",
+      "candid": "src/icrc1/icrc1-ledger.did"
+    },
+    "icrc1-bbb-ledger": {
+      "type": "custom",
+      "wasm": "src/icrc1/icrc1-ledger.wasm",
+      "candid": "src/icrc1/icrc1-ledger.did"
     }
   },
   "defaults": {

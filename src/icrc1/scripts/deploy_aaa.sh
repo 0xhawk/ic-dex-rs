@@ -9,10 +9,10 @@ export MINTER_PRINCIPAL=$(dfx identity get-principal)
 # Change the variable to the principal that controls archive canisters.
 export ARCHIVE_CONTROLLER=$(dfx identity get-principal)
 
-export TOKEN_NAME="My Token"
-export TOKEN_SYMBOL="XMTK"
+export TOKEN_NAME="A Token"
+export TOKEN_SYMBOL="AAA"
 
-dfx deploy --network ${NETWORK} icrc1-ledger --argument "(variant { Init = 
+dfx deploy --network ${NETWORK} icrc1-aaa-ledger --argument "(variant { Init = 
       record {
         token_name = \"${TOKEN_NAME}\";
         token_symbol = \"${TOKEN_SYMBOL}\";
