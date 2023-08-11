@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.inlayHints.lifetimeElisionHints.enable":"always",
+    "rust-analyzer.inlayHints.reborrowHints.enable": "always",
+    "[rust]": {
+        "editor.formatOnSave": true // Optional
+    },
+}
