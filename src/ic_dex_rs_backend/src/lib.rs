@@ -110,6 +110,18 @@ pub fn get_deposit_address() -> AccountIdentifier {
     AccountIdentifier::new(&canister_id, &subaccount)
 }
 
+#[update]
+#[candid_method(oneway)]
+pub fn clear() {
+    STATE.with(|s| {
+        let mut state = s.borrow_mut();
+        assert!(state.owner.unwrap() == caller());
+
+        state.exchange.orders.clear();
+        state.exchange.balances.0.clear();
+    })
+}
+
 #[init]
 fn init(ledger: Option<Principal>) {
     ic_cdk::setup();

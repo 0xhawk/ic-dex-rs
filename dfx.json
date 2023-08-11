@@ -1,34 +1,15 @@
 {
   "version": 1,
   "canisters": {
-    "ic_dex_rs_backend": {
+    "dex": {
       "type": "rust",
-      "package": "ic_dex_rs_backend",
-      "candid": "src/ic_dex_rs_backend/ic_dex_rs_backend.did"
-    },
-    "ic_dex_rs_frontend": {
-      "type": "assets",
-      "source": [
-        "src/ic_dex_rs_frontend/assets"
-      ],
-      "dependencies": [
-        "ic_dex_rs_backend"
-      ]
-    },
-    "publisher": {
-      "package": "publisher",
-      "candid": "src/publisher/src/publisher.did",
-      "type": "rust"
-    },
-    "subscriber": {
-      "package": "subscriber",
-      "candid": "src/subscriber/src/subscriber.did",
-      "type": "rust"
+      "package": "dex",
+      "candid": "src/dex/dex.did"
     }
   },
   "defaults": {
     "build": {
-      "packtool": "",
+      "packtool": "mops sources",
       "args": ""
     }
   },
