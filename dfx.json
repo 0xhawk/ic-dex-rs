@@ -15,6 +15,11 @@
       "type": "custom",
       "wasm": "src/icrc1/icrc1-ledger.wasm",
       "candid": "src/icrc1/icrc1-ledger.did"
+    },
+    "vetkd": {
+      "type": "rust",
+      "package": "vetkd",
+      "candid": "src/vetkd/vetkd.did"
     }
   },
   "defaults": {

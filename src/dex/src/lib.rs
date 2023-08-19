@@ -65,7 +65,7 @@ async fn deposit_icrc2(caller: Principal, token: Principal) -> Result<Nat, Depos
 }
 
 async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
-    Ok((Nat::from(0)))
+    Ok(Nat::from(0))
 }
 
 #[init]
