@@ -1,5 +1,6 @@
 [workspace]
 members = [
     "src/dex",
-    "src/vetkd"
+    "src/vetkd_backend",
+    "src/system_api"
 ]

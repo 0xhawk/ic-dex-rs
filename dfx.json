@@ -6,20 +6,32 @@
       "package": "dex",
       "candid": "src/dex/dex.did"
     },
-    "icrc1-aaa-ledger": {
-      "type": "custom",
-      "wasm": "src/icrc1/icrc1-ledger.wasm",
-      "candid": "src/icrc1/icrc1-ledger.did"
-    },
-    "icrc1-bbb-ledger": {
-      "type": "custom",
-      "wasm": "src/icrc1/icrc1-ledger.wasm",
-      "candid": "src/icrc1/icrc1-ledger.did"
-    },
-    "vetkd": {
+    "vetkd_backend": {
+      "dependencies": [
+        "system_api"
+      ],
       "type": "rust",
-      "package": "vetkd",
-      "candid": "src/vetkd/vetkd.did"
+      "package": "vetkd_backend",
+      "candid": "src/vetkd_backend/vetkd.did"
+    },
+    "system_api": {
+      "type": "rust",
+      "package": "system_api",
+      "candid": "src/system_api/vetkd_system_api.did"
+    },
+    "front": {
+      "dependencies": [
+        "vetkd_backend",
+        "system_api"
+      ],
+      "frontend": {
+        "entrypoint": "src/front/src/index.html"
+      },
+      "source": [
+        "src/front/assets",
+        "dist/front/"
+      ],
+      "type": "assets"
     }
   },
   "defaults": {
