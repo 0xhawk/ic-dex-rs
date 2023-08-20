@@ -4,7 +4,20 @@
     "dex": {
       "type": "rust",
       "package": "dex",
-      "candid": "src/dex/dex.did"
+      "candid": "src/dex/dex.did",
+      "dependencies": [
+        "ledger"
+      ]
+    },
+    "ledger": {
+      "type": "custom",
+      "candid": "src/ledger/ledger.public.did",
+      "wasm": "src/ledger/ledger.wasm",
+      "remote": {
+        "id": {
+          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
     },
     "vetkd_backend": {
       "dependencies": [
