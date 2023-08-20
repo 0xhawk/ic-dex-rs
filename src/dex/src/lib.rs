@@ -2,18 +2,15 @@ use candid::{candid_method, CandidType, Nat, Principal};
 use ic_cdk::caller;
 use ic_cdk_macros::*;
 use ic_ledger_types::{
-    AccountBalanceArgs, AccountIdentifier, Memo, Tokens, DEFAULT_SUBACCOUNT,
-    MAINNET_LEDGER_CANISTER_ID,
+    AccountIdentifier, Memo, Tokens, DEFAULT_SUBACCOUNT, MAINNET_LEDGER_CANISTER_ID,
 };
 use std::cell::RefCell;
 
-mod dip20;
 mod exchange;
 mod stable;
 mod types;
 mod utils;
 
-use dip20::DIP20;
 use exchange::Exchange;
 use types::*;
 use utils::principal_to_subaccount;
@@ -50,9 +47,7 @@ pub enum WithdrawErr {
 #[candid_method(update)]
 pub async fn deposit() -> DepositReceipt {
     let caller = caller();
-    let ledger_canister_id = STATE
-        .with(|s| s.borrow().ledger)
-        .unwrap_or(MAINNET_LEDGER_CANISTER_ID);
+    let ledger_canister_id = ledger_canister_id();
     let amount = deposit_icp(caller).await?;
     STATE.with(|s| {
         s.borrow_mut().exchange.balances.add_balance(
@@ -81,10 +76,7 @@ pub async fn withdraw(amount: Nat, address: Principal) -> WithdrawReceipt {
 
 async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
     let canister_id = ic_cdk::api::id();
-    let ledger_canister_id = STATE
-        .with(|s| s.borrow().ledger)
-        .unwrap_or(MAINNET_LEDGER_CANISTER_ID);
-
+    let ledger_canister_id = ledger_canister_id();
     let account = AccountIdentifier::new(&canister_id, &principal_to_subaccount(&caller));
 
     let balance_args = ic_ledger_types::AccountBalanceArgs { account };
@@ -120,10 +112,7 @@ async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
 
 async fn withdraw_icp(amount: &Nat, account_id: AccountIdentifier) -> Result<Nat, WithdrawErr> {
     let caller = caller();
-    let ledger_canister_id = STATE
-        .with(|s| s.borrow().ledger)
-        .unwrap_or(MAINNET_LEDGER_CANISTER_ID);
-
+    let ledger_canister_id = ledger_canister_id();
     let sufficient_balance = STATE.with(|s| {
         s.borrow_mut().exchange.balances.subtract_balance(
             &caller,
@@ -182,7 +171,25 @@ pub fn clear() {
     STATE.with(|s| {
         let mut state = s.borrow_mut();
         assert!(state.owner == Some(caller()));
-
-        // TODO
+        state.exchange.orders.clear();
+        state.exchange.balances.0.clear();
     })
+}
+
+#[query]
+#[candid_method(query)]
+pub fn whoami() -> Principal {
+    caller()
+}
+
+#[query]
+#[candid_method(query)]
+pub fn get_balance() -> Nat {
+    STATE.with(|s| s.borrow().exchange.get_balance(ledger_canister_id()))
+}
+
+fn ledger_canister_id() -> Principal {
+    STATE
+        .with(|s| s.borrow().ledger)
+        .unwrap_or(MAINNET_LEDGER_CANISTER_ID)
 }
