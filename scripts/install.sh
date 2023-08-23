@@ -1,13 +1,16 @@
 set -e
+trap 'catch' ERR
+catch() {
+  dfx identity use default
+  echo "FAIL"
+  exit 1
+}
+
 dfx stop && dfx start --background --clean
 
-### === DEPLOY LOCAL LEDGER =====
 # dfx identity new minter
 dfx identity use minter
-export MINTER_ACC=$(dfx ledger account-id)
-export MINTER_PRINCIPAL=$(dfx identity get-principal)
-echo $MINTER_ACC
-echo $MINTER_PRINCIPAL
+export MINT_ACC=$(dfx ledger account-id)
 
 # dfx identity new alice
 dfx identity use alice
@@ -24,11 +27,8 @@ echo $BOB_ACC
 echo $BOB_PRINCIPAL
 
 dfx identity use default
+export LEDGER_ACC=$(dfx ledger account-id)
+export LEDGER_PRINCIPAL=$(dfx identity get-principal)
 
-# === DEPLOY TOKENS ====
-sh src/icrc1/scripts/deploy_aaa.sh
-sh src/icrc1/scripts/deploy_bbb.sh
-
-
-# === SETUP TOKENS ====
-sh src/dex/scripts/initialize_local_balance.sh
+# deploy all canisters
+dfx deploy
