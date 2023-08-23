@@ -1,0 +1,15 @@
+type Result = variant { Ok : nat; Err : TxError };
+type TxError = variant {
+    InsufficientAllowance;
+    InsufficientBalance;
+};
+service : () -> {
+    allowance: (principal, principal) -> (nat) query;
+    balance_of : (principal) -> (nat) query;
+    name : () -> (text) query;
+    symbol : () -> (text) query;
+    total_balance : () -> (nat) query;
+    transfer : (principal, nat) -> (Result);
+    transfer_from : (principal, principal, nat) -> (Result);
+    approve : (principal, nat) -> (Result);
+}

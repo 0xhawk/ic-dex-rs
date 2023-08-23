@@ -10,41 +10,9 @@
       ]
     },
     "ledger": {
-      "type": "custom",
-      "candid": "src/ledger/ledger.public.did",
-      "wasm": "src/ledger/ledger.wasm",
-      "remote": {
-        "id": {
-          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-        }
-      }
-    },
-    "vetkd_backend": {
-      "dependencies": [
-        "system_api"
-      ],
       "type": "rust",
-      "package": "vetkd_backend",
-      "candid": "src/vetkd_backend/vetkd.did"
-    },
-    "system_api": {
-      "type": "rust",
-      "package": "system_api",
-      "candid": "src/system_api/vetkd_system_api.did"
-    },
-    "front": {
-      "dependencies": [
-        "vetkd_backend",
-        "system_api"
-      ],
-      "frontend": {
-        "entrypoint": "src/front/src/index.html"
-      },
-      "source": [
-        "src/front/assets",
-        "dist/front/"
-      ],
-      "type": "assets"
+      "package": "ledger",
+      "candid": "src/ledger/ledger.did"
     }
   },
   "defaults": {
