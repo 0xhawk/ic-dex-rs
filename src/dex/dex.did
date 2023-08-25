@@ -49,13 +49,13 @@ type Dex =
  };
 type DepositReceipt = 
  variant {
-   Err: DepositErr;
+   Err: TxError;
    Ok: nat;
  };
-type DepositErr = 
+type TxError = 
  variant {
-   BalanceLow;
-   TransferFailure;
+  InsufficientBalance;
+  InsufficientAllowance;
  };
 type CancelOrderReceipt = 
  variant {
@@ -73,4 +73,7 @@ type Balance =
    owner: principal;
    token: Token;
  };
-service : (ledger: opt principal) -> Dex
+// service : (ledger: opt principal) -> Dex
+service : () -> {
+  deposit: (nat, principal) -> (DepositReceipt);
+}

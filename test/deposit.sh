@@ -29,10 +29,11 @@ dfx identity use bob
 dfx canister call ledger approve "(principal \"$DEX_ID\", 1000)"
 
 # deposit
+export LEDGER_ID=$(dfx canister id ledger)
 dfx identity use alice
-dfx canister call dex deposit "(200)"
+dfx canister call dex deposit "(200, principal \"$LEDGER_ID\")"
 dfx identity use bob
-dfx canister call dex deposit "(300)"
+dfx canister call dex deposit "(300, principal \"$LEDGER_ID\")"
 
 echo "=== Alice Balance ==="
 dfx canister call ledger balance_of "(principal \"$ALICE_PRINCIPAL\")"
