@@ -1,79 +1,19 @@
-type WithdrawReceipt = 
- variant {
-   Err: WithdrawErr;
-   Ok: nat;
- };
-type WithdrawErr = 
- variant {
-   BalanceLow;
-   TransferFailure;
- };
-type Token = principal;
-type OrderPlacementReceipt = 
- variant {
-   Err: OrderPlacementErr;
-   Ok: opt Order;
- };
-type OrderPlacementErr = 
- variant {
-   InvalidOrder;
-   OrderBookFull;
- };
-type OrderId = nat32;
-type Order = 
- record {
-   from: Token;
-   fromAmount: nat;
-   id: OrderId;
-   owner: principal;
-   to: Token;
-   toAmount: nat;
- };
-type Dex = 
- service {
-  deposit: (nat) -> (DepositReceipt);
-  //  cancelOrder: (OrderId) -> (CancelOrderReceipt);
-  //  clear: () -> () oneway;
-  //  credit: (principal, Token, nat) -> () oneway;
-  //  deposit: (Token) -> (DepositReceipt);
-  //  getAllBalances: () -> (vec Balance) query;
-  //  getBalance: (Token) -> (nat) query;
-  //  getBalances: () -> (vec Balance) query;
-  //  getDepositAddress: () -> (blob);
-  //  getOrder: (OrderId) -> (opt Order);
-  //  getOrders: () -> (vec Order);
-  //  getSymbol: (Token) -> (text);
-  //  placeOrder: (Token, nat, Token, nat) -> (OrderPlacementReceipt);
-  //  whoami: () -> (principal) query;
-  //  withdraw: (Token, nat, principal) -> (WithdrawReceipt);
- };
 type DepositReceipt = 
- variant {
-   Err: TxError;
-   Ok: nat;
- };
+  variant {
+    Err: TxError;
+    Ok: nat;
+};
+type WithdrawReceipt = 
+  variant {
+    Err: TxError;
+    Ok: nat;
+};
 type TxError = 
- variant {
-  InsufficientBalance;
-  InsufficientAllowance;
- };
-type CancelOrderReceipt = 
- variant {
-   Err: CancelOrderErr;
-   Ok: OrderId;
- };
-type CancelOrderErr = 
- variant {
-   NotAllowed;
-   NotExistingOrder;
- };
-type Balance = 
- record {
-   amount: nat;
-   owner: principal;
-   token: Token;
- };
-// service : (ledger: opt principal) -> Dex
+  variant {
+    InsufficientBalance;
+    InsufficientAllowance;
+};
 service : () -> {
   deposit: (nat, principal) -> (DepositReceipt);
+  withdraw: (nat, principal, principal) -> (WithdrawReceipt);
 }
