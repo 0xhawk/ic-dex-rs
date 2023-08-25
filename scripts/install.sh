@@ -31,4 +31,6 @@ export LEDGER_ACC=$(dfx ledger account-id)
 export LEDGER_PRINCIPAL=$(dfx identity get-principal)
 
 # deploy all canisters
-dfx deploy
+dfx deploy ledger
+export LEDGER_ID=$(dfx canister id ledger)
+dfx deploy dex --argument "(opt principal \"$LEDGER_ID\")"

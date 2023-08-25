@@ -31,20 +31,21 @@ type Order =
  };
 type Dex = 
  service {
-   cancelOrder: (OrderId) -> (CancelOrderReceipt);
-   clear: () -> () oneway;
-   credit: (principal, Token, nat) -> () oneway;
-   deposit: (Token) -> (DepositReceipt);
-   getAllBalances: () -> (vec Balance) query;
-   getBalance: (Token) -> (nat) query;
-   getBalances: () -> (vec Balance) query;
-   getDepositAddress: () -> (blob);
-   getOrder: (OrderId) -> (opt Order);
-   getOrders: () -> (vec Order);
-   getSymbol: (Token) -> (text);
-   placeOrder: (Token, nat, Token, nat) -> (OrderPlacementReceipt);
-   whoami: () -> (principal) query;
-   withdraw: (Token, nat, principal) -> (WithdrawReceipt);
+  deposit: (nat) -> (DepositReceipt);
+  //  cancelOrder: (OrderId) -> (CancelOrderReceipt);
+  //  clear: () -> () oneway;
+  //  credit: (principal, Token, nat) -> () oneway;
+  //  deposit: (Token) -> (DepositReceipt);
+  //  getAllBalances: () -> (vec Balance) query;
+  //  getBalance: (Token) -> (nat) query;
+  //  getBalances: () -> (vec Balance) query;
+  //  getDepositAddress: () -> (blob);
+  //  getOrder: (OrderId) -> (opt Order);
+  //  getOrders: () -> (vec Order);
+  //  getSymbol: (Token) -> (text);
+  //  placeOrder: (Token, nat, Token, nat) -> (OrderPlacementReceipt);
+  //  whoami: () -> (principal) query;
+  //  withdraw: (Token, nat, principal) -> (WithdrawReceipt);
  };
 type DepositReceipt = 
  variant {

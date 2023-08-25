@@ -1,4 +1,4 @@
-use candid::{candid_method, CandidType, Nat, Principal};
+use candid::{candid_method, CandidType, Int, Nat, Principal};
 use ic_cdk::caller;
 use ic_cdk_macros::*;
 use ic_ledger_types::{
@@ -45,10 +45,10 @@ pub enum WithdrawErr {
 
 #[update]
 #[candid_method(update)]
-pub async fn deposit() -> DepositReceipt {
+pub async fn deposit(amount: Nat) -> DepositReceipt {
     let caller = caller();
     let ledger_canister_id = ledger_canister_id();
-    let amount = deposit_icp(caller).await?;
+    let amount = deposit_icp(caller, &amount).await?;
     STATE.with(|s| {
         s.borrow_mut().exchange.balances.add_balance(
             &caller,
@@ -74,7 +74,7 @@ pub async fn withdraw(amount: Nat, address: Principal) -> WithdrawReceipt {
     withdraw_icp(&amount, account_id).await
 }
 
-async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
+async fn deposit_icp(caller: Principal, amount: &Nat) -> Result<Nat, DepositErr> {
     let canister_id = ic_cdk::api::id();
     let ledger_canister_id = ledger_canister_id();
     let account = AccountIdentifier::new(&canister_id, &principal_to_subaccount(&caller));
@@ -84,13 +84,20 @@ async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
         .await
         .map_err(|_| DepositErr::TransferFailure)?;
 
-    if balance.e8s() < ICP_FEE {
+    if balance.e8s() < ICP_FEE + amount.clone() {
         return Err(DepositErr::BalanceLow);
     }
 
+    let transfer_amount = Tokens::from_e8s(
+        amount
+            .to_owned()
+            .0
+            .try_into()
+            .map_err(|_| DepositErr::TransferFailure)?,
+    );
     let transfer_args = ic_ledger_types::TransferArgs {
         memo: Memo(0),
-        amount: balance - Tokens::from_e8s(ICP_FEE),
+        amount: transfer_amount,
         fee: Tokens::from_e8s(ICP_FEE),
         from_subaccount: Some(principal_to_subaccount(&caller)),
         to: AccountIdentifier::new(&canister_id, &DEFAULT_SUBACCOUNT),
@@ -103,7 +110,7 @@ async fn deposit_icp(caller: Principal) -> Result<Nat, DepositErr> {
 
     ic_cdk::println!(
         "Deposit of {} ICP in account {:?}",
-        balance - Tokens::from_e8s(ICP_FEE),
+        transfer_amount,
         &account
     );
 
