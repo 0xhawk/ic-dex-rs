@@ -1,19 +1,14 @@
-use candid::{candid_method, CandidType, Int, Nat, Principal};
+use candid::{candid_method, Nat, Principal};
 use ic_cdk::caller;
 use ic_cdk_macros::*;
-use serde_derive::Deserialize;
 use std::cell::RefCell;
 
 mod exchange;
-mod stable;
 mod types;
 mod utils;
 
 use exchange::Exchange;
 use types::*;
-
-pub type DepositReceipt = Result<Nat, TxError>;
-pub type WithdrawReceipt = Result<Nat, TxError>;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::new(State::default());
@@ -24,12 +19,6 @@ pub struct State {
     owner: Option<Principal>,
     ledger: Option<Principal>,
     exchange: Exchange,
-}
-
-#[derive(CandidType, Debug, PartialEq, Deserialize)]
-pub enum TxError {
-    InsufficientBalance,
-    InsufficientAllowance,
 }
 
 #[update]
@@ -55,14 +44,6 @@ pub async fn withdraw(
     token_canister_id: Principal,
     dest: Principal,
 ) -> WithdrawReceipt {
-    let caller = caller();
-
-    STATE.with(|s| {
-        s.borrow_mut()
-            .exchange
-            .orders
-            .retain(|_, v| v.owner != caller);
-    });
     withdraw_token(dest, &amount, token_canister_id).await
 }
 
@@ -124,7 +105,6 @@ pub fn clear() {
     STATE.with(|s| {
         let mut state = s.borrow_mut();
         assert!(state.owner == Some(caller()));
-        state.exchange.orders.clear();
         state.exchange.balances.0.clear();
     })
 }

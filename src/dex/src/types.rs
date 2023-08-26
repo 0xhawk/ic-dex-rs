@@ -1,17 +1,5 @@
 use candid::{CandidType, Nat, Principal};
-
-pub type OrderId = u32;
-
-#[allow(non_snake_case)]
-#[derive(CandidType, Clone)]
-pub struct Order {
-    pub id: OrderId,
-    pub owner: Principal,
-    pub from: Principal,
-    pub fromAmount: Nat,
-    pub to: Principal,
-    pub toAmount: Nat,
-}
+use serde_derive::Deserialize;
 
 #[derive(CandidType)]
 pub struct Balance {
@@ -20,34 +8,11 @@ pub struct Balance {
     pub amount: Nat,
 }
 
-pub type CancelOrderReceipt = Result<OrderId, CancelOrderErr>;
+pub type DepositReceipt = Result<Nat, TxError>;
+pub type WithdrawReceipt = Result<Nat, TxError>;
 
-#[derive(CandidType)]
-pub enum CancelOrderErr {
-    NotAllowed,
-    NotExistingOrder,
-}
-
-pub type DepositReceipt = Result<Nat, DepositErr>;
-
-#[derive(CandidType)]
-pub enum DepositErr {
-    BalanceLow,
-    TransferFailure,
-}
-
-pub type OrderPlacementReceipt = Result<Option<Order>, OrderPlacementErr>;
-
-#[derive(CandidType)]
-pub enum OrderPlacementErr {
-    InvalidOrder,
-    OrderBookFull,
-}
-
-pub type WithdrawReceipt = Result<Nat, WithdrawErr>;
-
-#[derive(CandidType)]
-pub enum WithdrawErr {
-    BalanceLow,
-    TransferFailure,
+#[derive(CandidType, Debug, PartialEq, Deserialize)]
+pub enum TxError {
+    InsufficientBalance,
+    InsufficientAllowance,
 }

@@ -1,18 +1,14 @@
 use candid::{Nat, Principal};
 use std::collections::HashMap;
 
-use crate::types::*;
-use crate::{utils, OrderId};
+use crate::utils;
 
 #[derive(Default)]
 pub struct Balances(pub HashMap<Principal, HashMap<Principal, Nat>>); // owner -> token_canister_id -> amount
-type Orders = HashMap<OrderId, Order>;
 
 #[derive(Default)]
 pub struct Exchange {
-    pub next_id: OrderId,
     pub balances: Balances,
-    pub orders: Orders,
 }
 
 impl Balances {
