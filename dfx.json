@@ -6,13 +6,41 @@
       "package": "dex",
       "candid": "src/dex/dex.did",
       "dependencies": [
-        "ledger"
+        "ledger",
+        "system_api"
       ]
     },
     "ledger": {
       "type": "rust",
       "package": "ledger",
       "candid": "src/ledger/ledger.did"
+    },
+    "system_api": {
+      "candid": "src/system_api/vetkd_system_api.did",
+      "package": "vetkd_system_api",
+      "type": "rust"
+    },
+    "vetkd_backend": {
+      "dependencies": [
+        "system_api"
+      ],
+      "candid": "src/vetkd_backend/vetkd_backend.did",
+      "package": "vetkd_backend",
+      "type": "rust"
+    },
+    "front": {
+      "dependencies": [
+        "vetkd_backend",
+        "system_api"
+      ],
+      "frontend": {
+        "entrypoint": "src/front/src/index.html"
+      },
+      "source": [
+        "src/front/assets",
+        "dist/front/"
+      ],
+      "type": "assets"
     }
   },
   "defaults": {

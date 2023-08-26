@@ -1,5 +1,5 @@
 [package]
-name = "system_api"
+name = "vetkd_system_api"
 version = "0.1.0"
 edition = "2021"
 

@@ -32,5 +32,8 @@ export LEDGER_PRINCIPAL=$(dfx identity get-principal)
 
 # deploy all canisters
 dfx deploy ledger
+dfx deploy system_api
+dfx deploy vetkd_backend
+dfx deploy front
 export LEDGER_ID=$(dfx canister id ledger)
 dfx deploy dex --argument "(opt principal \"$LEDGER_ID\")"
